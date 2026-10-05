@@ -96,8 +96,6 @@ $(function () {
           row('First Published', val(book.first_publish_year)) +
           row('Editions', val(book.edition_count)) +
           row('Language', joined(book.language)) +
-          row('Publisher', joined(book.publisher)) +
-          row('ISBN', joined(book.isbn ? book.isbn.slice(0, 3) : null)) +
           row('Ebook Access', access(book.ebook_access)) +
           row('Full Text', yesNo(book.has_fulltext)) +
           row('Work Record', workLink) +
