@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IT 4403 - Coursework Site</title>
+  <title>IT 4403 - Project Home</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,9 +11,11 @@
   <header class="site-header">
     <div class="container header-inner">
       <h1 class="site-title">Sam Watson</h1>
-      <nav class="site-nav">
+      <nav class="site-nav" aria-label="Main navigation">
         <a href="#about">About</a>
-        <a href="#coursework">Coursework</a>
+        <a href="#course">Course</a>
+        <a href="#labs">Lab Work</a>
+        <a href="#milestones">Project Milestones</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
@@ -22,7 +24,8 @@
   <section class="hero">
     <div class="container">
       <h2>IT 4403 - Web Application Development</h2>
-      <p>This site hosts my exercises, labs, and project work for the semester.</p>
+      <p>This site hosts my exercises, labs, and individual project work for the semester.</p>
+      <p><strong>Student:</strong> Sam Watson &nbsp;|&nbsp; <strong>Affiliation:</strong> IT 4403, Kennesaw State University</p>
     </div>
   </section>
 
@@ -31,28 +34,54 @@
     <section id="about" class="section">
       <h3>About This Site</h3>
       <p>
-        This site was built for IT 4403 and is hosted on GitHub Pages.
+        This site was built for IT 4403 and is hosted on Microsoft Azure.
         Source code is version-controlled on GitHub and deployed automatically
         via GitHub Actions whenever changes are pushed. Below you'll find links
-        to each lab and exercise as they're completed throughout the semester.
+        to each lab and project milestone as they're completed throughout the semester.
       </p>
     </section>
 
-    <section id="coursework" class="section">
-      <h3>Coursework</h3>
+    <section id="course" class="section">
+      <h3>Course Information</h3>
+      <p>
+        <strong>Course:</strong> IT 4403 - Web Application Development<br />
+        <strong>University:</strong> Kennesaw State University<br />
+        <strong>College:</strong> College of Computing and Software Engineering (CCSE)
+      </p>
+      <p>
+        Learn more about the program on the
+        <a href="https://ccse.kennesaw.edu/it/" target="_blank" rel="noopener">CCSE Information Technology department website</a>.
+      </p>
+    </section>
+
+    <section id="labs" class="section">
+      <h3>Lab Work</h3>
       <ul class="coursework-list">
-        <li><strong>Lab 1 - Public Website Setup: URL and Wireframe</strong> <em></em></li>
+        <li><strong>Lab 1 - Web Hosting Setup:</strong> <em>this site</em></li>
         <!--
-          Add one <li> per item as you complete it, e.g.:
-          <li><strong>Lab 2 — [Title]:</strong> <a href="lab2.html">View Lab 2</a></li>
-          <li><strong>Exercise 3:</strong> <a href="ex3.html">View Exercise 3</a></li>
+          Add one <li> per lab as you complete it, e.g.:
+          <li><strong>Lab 2 - [Title]:</strong> <a href="lab2.html">View Lab 2</a></li>
+          <li><strong>Lab 3 - JSON Basics:</strong> <a href="lab3.html">View Lab 3</a></li>
         -->
+      </ul>
+    </section>
+
+    <section id="milestones" class="section">
+      <h3>Individual Project Milestone</h3>
+      <ul class="coursework-list">
+        <li>
+          <strong>Milestone 1 - Open Library JSON:</strong>
+          <ul>
+            <li><a href="milestone1/book.html">Single Book Record: Fantastic Mr. Fox</a></li>
+            <li><a href="milestone1/search.html">Search Results for "modern web"</a></li>
+          </ul>
+        </li>
       </ul>
     </section>
 
     <section id="contact" class="section">
       <h3>Contact</h3>
-      <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
+      <p>Email: <a href="mailto:swatso95@students.kennesaw.edu">swatso95@students.kennesaw.edu</a></p>
     </section>
 
   </main>
