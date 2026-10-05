@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search Results – "modern web"</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f8; color: #222; margin: 0; }
+  header, footer { background: #1f3a5f; color: #fff; padding: 1rem 2rem; }
+  header a, footer a { color: #cfe3ff; }
+  main { max-width: 1000px; margin: 1.5rem auto; padding: 0 1rem; }
+  #summary { margin-bottom: 1rem; }
+  #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 1rem; }
+  .book { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); padding: 1rem; display: flex; gap: 1rem; }
+  .cover { width: 110px; flex-shrink: 0; }
+  .cover img { width: 110px; border: 1px solid #ccc; border-radius: 4px; }
+  .nocover { width: 110px; height: 160px; background: #e3e8ee; color: #666; font-size: .8rem; display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 4px; }
+  .info { min-width: 0; }
+  .info h2 { margin: 0 0 .2rem; font-size: 1.15rem; }
+  .subtitle { margin: 0 0 .5rem; color: #555; font-style: italic; }
+  dl { margin: 0; font-size: .92rem; }
+  dt { font-weight: bold; color: #1f3a5f; float: left; clear: left; width: 8.5rem; }
+  dd { margin: 0 0 .25rem 8.5rem; }
+  a { color: #0b5cad; }
+  .na { color: #777; font-style: italic; }
+  @media (max-width: 520px) { #results { grid-template-columns: 1fr; } .book { flex-direction: column; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Milestone 1: Search Results</h1>
+  <a href="index.html">Back to Project Home</a>
+</header>
+<main>
+  <p id="summary" aria-live="polite">Loading search results…</p>
+  <div id="results"></div>
+</main>
+<footer>Data source: <a href="https://openlibrary.org/search?q=modern+web" target="_blank" rel="noopener">Open Library search for "modern web"</a></footer>
+
+<script>
+$(function () {
+  var NA = '<span class="na">Not available</span>';
+
+  function esc(v) { return $('<div>').text(v).html(); }
+  function val(v) { return (v === undefined || v === null || v === '') ? NA : esc(v); }
+  function joined(arr) { return (Array.isArray(arr) && arr.length) ? esc(arr.join(', ')) : NA; }
+  function row(label, html) { return '<dt>' + label + '</dt><dd>' + html + '</dd>'; }
+  function yesNo(v) { return v === true ? 'Yes' : (v === false ? 'No' : NA); }
+  function access(v) {
+    var map = { borrowable: 'Borrowable', no_ebook: 'No ebook', public: 'Free to read', printdisabled: 'Print disabled only' };
+    return v ? esc(map[v] || v) : NA;
+  }
+
+  $.getJSON('openlibrary-search.json')
+    .done(function (data) {
+      var docs = data.docs || [];
+      $('#summary').text('Search phrase: "' + (data.q || 'modern web') + '" — showing ' + docs.length + ' of ' + (data.numFound || docs.length) + ' matching works.');
+
+      // Main loop over the docs array
+      $.each(docs, function (i, book) {
+        var title = book.title || 'Untitled';
+
+        var cover = book.cover_i
+          ? '<img src="https://covers.openlibrary.org/b/id/' + book.cover_i + '-M.jpg" alt="Front cover of ' + esc(title) + '" loading="lazy">'
+          : '<div class="nocover">No cover available</div>';
+
+        // Authors: names and keys are parallel arrays, so loop with an index
+        var authors = NA;
+        if (Array.isArray(book.author_name) && book.author_name.length) {
+          var parts = [];
+          $.each(book.author_name, function (j, name) {
+            var key = book.author_key && book.author_key[j];
+            parts.push(key
+              ? '<a href="https://openlibrary.org/authors/' + key + '" target="_blank" rel="noopener">' + esc(name) + '</a>'
+              : esc(name));
+          });
+          authors = parts.join(', ');
+        }
+
+        var workLink = book.key
+          ? '<a href="https://openlibrary.org' + book.key + '" target="_blank" rel="noopener">View "' + esc(title) + '" on Open Library</a>'
+          : NA;
+        var editionLink = book.cover_edition_key
+          ? '<a href="https://openlibrary.org/books/' + book.cover_edition_key + '" target="_blank" rel="noopener">Cover edition record</a>'
+          : NA;
+        var archive = (Array.isArray(book.ia) && book.ia.length)
+          ? '<a href="https://archive.org/details/' + book.ia[0] + '" target="_blank" rel="noopener">Read or borrow on the Internet Archive</a>'
+          : NA;
+
+        var html = '<article class="book"><div class="cover">' + cover + '</div><div class="info">' +
+          '<h2>' + (i + 1) + '. ' + esc(title) + '</h2>' +
+          (book.subtitle ? '<p class="subtitle">' + esc(book.subtitle) + '</p>' : '') +
+          '<dl>' +
+          row('Author(s)', authors) +
+          row('First Published', val(book.first_publish_year)) +
+          row('Editions', val(book.edition_count)) +
+          row('Language', joined(book.language)) +
+          row('Publisher', joined(book.publisher)) +
+          row('ISBN', joined(book.isbn ? book.isbn.slice(0, 3) : null)) +
+          row('Ebook Access', access(book.ebook_access)) +
+          row('Full Text', yesNo(book.has_fulltext)) +
+          row('Work Record', workLink) +
+          row('Edition', editionLink) +
+          row('Internet Archive', archive) +
+          '</dl></div></article>';
+
+        $('#results').append(html);
+      });
+    })
+    .fail(function () {
+      $('#summary').text('Sorry, the search data could not be loaded. Check that openlibrary-search.json is in the same folder as this page.');
+    });
+});
+</script>
+</body>
+</html>
