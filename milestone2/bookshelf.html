@@ -18,8 +18,14 @@
 </main>
 <script>
 $(function () {
-  // Work IDs of my chosen books. Titles and covers come from the API.
-  var workIds = ['OL45804W', 'OL17308344W', 'OL16804365W', 'OL22297316W'];
+  // Work IDs of my books. Titles and covers come from the API.
+  var workIds = [
+    'OL45804W',      // Fantastic Mr. Fox
+    'OL17308344W',   // Web Scraping with Python
+    'OL16215318W',   // The Tangled Web
+    'OL22297316W',   // Django for Beginners
+    'OL16804365W'    // The Modern Web
+  ];
 
   function esc(s) { return $('<div>').text(s).html(); }
 
