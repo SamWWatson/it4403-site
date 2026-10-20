@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Bookshelf</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Open Library Book Finder</h1>
+  <nav aria-label="Main navigation"><a href="index.html">Home</a><a href="bookshelf.html">My Bookshelf</a></nav>
+</header>
+<main>
+<h2>My Bookshelf</h2>
+<ul id="shelf" class="book-list"></ul>
+</main>
+<script>
+$(function () {
+  // Work IDs of my chosen books. Titles and covers come from the API.
+  var workIds = ['OL45804W', 'OL17308344W', 'OL16804365W', 'OL22297316W'];
+
+  function esc(s) { return $('<div>').text(s).html(); }
+
+  $.each(workIds, function (i, id) {
+    // Placeholder keeps the books in my chosen order
+    var $item = $('<li>Loading...</li>').appendTo('#shelf');
+    $.getJSON('https://openlibrary.org/works/' + id + '.json')
+      .done(function (w) {
+        var title = w.title || 'Untitled';
+        var coverId = null;
+        $.each(w.covers || [], function (j, c) { if (c > 0) { coverId = c; return false; } });
+        var cover = coverId
+          ? '<img src="https://covers.openlibrary.org/b/id/' + coverId + '-S.jpg" alt="Cover of ' + esc(title) + '">'
+          : '<div class="nocover-s">No cover</div>';
+        $item.html(cover + '<a href="details.html?id=' + id + '">' + esc(title) + '</a>');
+      })
+      .fail(function () { $item.html('<span class="na">Could not load book ' + id + '.</span>'); });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Details</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Open Library Book Finder</h1>
+  <nav aria-label="Main navigation"><a href="index.html">Home</a><a href="bookshelf.html">My Bookshelf</a></nav>
+</header>
+<main>
+<h2>Book Details</h2>
+<div id="message" aria-live="polite"></div>
+<div id="detail"></div>
+</main>
+<script>
+$(function () {
+  function esc(s) { return $('<div>').text(s).html(); }
+  var id = new URLSearchParams(window.location.search).get('id');
+  if (!id) { $('#message').html('<p class="msg error">No book was selected. Go to the <a href="index.html">search page</a> to pick one.</p>'); return; }
+
+  $.getJSON('https://openlibrary.org/works/' + encodeURIComponent(id) + '.json')
+    .done(function (w) {
+      var title = w.title || 'Untitled';
+      document.title = title + ' - Book Details';
+
+      // Work records use a covers array
+      var coverId = null;
+      $.each(w.covers || [], function (i, c) { if (c > 0) { coverId = c; return false; } });
+      var cover = coverId
+        ? '<img src="https://covers.openlibrary.org/b/id/' + coverId + '-M.jpg" alt="Cover of ' + esc(title) + '">'
+        : '<div class="nocover">No cover available</div>';
+
+      // Description may be text or an object with a value property
+      var d = w.description;
+      var desc = typeof d === 'string' ? d : (d && d.value ? d.value : null);
+      var descHtml = desc ? '<p>' + esc(desc) + '</p>' : '<p class="na">No description available.</p>';
+
+      var subjects = '<p class="na">No subjects available.</p>';
+      if (Array.isArray(w.subjects) && w.subjects.length) {
+        subjects = '<ul>';
+        $.each(w.subjects.slice(0, 10), function (i, s) { subjects += '<li>' + esc(s) + '</li>'; });
+        subjects += '</ul>';
+      }
+
+      $('#detail').html('<section class="detail"><div>' + cover + '</div><div class="info">' +
+        '<h2>' + esc(title) + '</h2>' +
+        '<p><strong>Work ID:</strong> ' + esc(id) + '</p>' +
+        '<h3>Description</h3>' + descHtml +
+        '<h3>Subjects</h3>' + subjects +
+        '<p><a href="https://openlibrary.org/works/' + encodeURIComponent(id) + '" target="_blank" rel="noopener">View "' + esc(title) + '" on Open Library</a></p>' +
+        '</div></section>');
+    })
+    .fail(function () {
+      $('#message').html('<p class="msg error">Sorry, this book could not be loaded. Check the Work ID or try again later.</p>');
+    });
+});
+</script>
+</body>
+</html>

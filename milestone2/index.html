@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Search - Home</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Open Library Book Finder</h1>
+  <nav aria-label="Main navigation"><a href="index.html">Home</a><a href="bookshelf.html">My Bookshelf</a></nav>
+</header>
+<main>
+<h2>Book Search</h2>
+<form id="searchForm">
+  <label for="term" style="position:absolute;left:-9999px">Search term</label>
+  <input type="text" id="term" placeholder="Search for books, e.g. data analysis">
+  <button type="submit">Search</button>
+</form>
+<div id="message" aria-live="polite"></div>
+<div id="pager" class="pager" hidden>
+  <label for="pageSelect">Page:</label>
+  <select id="pageSelect"></select>
+  <span id="count"></span>
+</div>
+<ul id="results" class="book-list"></ul>
+</main>
+<script>
+$(function () {
+  var PER_PAGE = 10, MAX_RESULTS = 60;
+  var currentTerm = '';
+
+  function esc(s) { return $('<div>').text(s).html(); }
+  function showMsg(text, isError) {
+    $('#message').html(text ? '<p class="msg' + (isError ? ' error' : '') + '">' + text + '</p>' : '');
+  }
+
+  function loadPage(page) {
+    var url = 'https://openlibrary.org/search.json?q=' + encodeURIComponent(currentTerm) +
+              '&limit=' + PER_PAGE + '&page=' + page + '&fields=key,title,cover_i';
+    showMsg('Loading...');
+    $.getJSON(url)
+      .done(function (data) {
+        var docs = data.docs || [];
+        $('#results').empty();
+        if (docs.length === 0) {
+          $('#pager').prop('hidden', true);
+          showMsg('No results found for "' + esc(currentTerm) + '". Try a different search.');
+          return;
+        }
+        showMsg('');
+        $.each(docs, function (i, book) {
+          var workId = book.key.replace('/works/', '');
+          var cover = book.cover_i
+            ? '<img src="https://covers.openlibrary.org/b/id/' + book.cover_i + '-S.jpg" alt="Cover of ' + esc(book.title) + '">'
+            : '<div class="nocover-s">No cover</div>';
+          $('#results').append('<li>' + cover + '<a href="details.html?id=' + workId + '">' + esc(book.title || 'Untitled') + '</a></li>');
+        });
+        // Page dropdown, capped at 60 total results
+        var total = Math.min(data.numFound, MAX_RESULTS);
+        var pages = Math.ceil(total / PER_PAGE);
+        var sel = $('#pageSelect').empty();
+        for (var p = 1; p <= pages; p++) { sel.append('<option value="' + p + '">' + p + '</option>'); }
+        sel.val(page);
+        $('#count').text('Showing up to ' + total + ' of ' + data.numFound + ' results');
+        $('#pager').prop('hidden', pages < 1);
+      })
+      .fail(function () {
+        $('#results').empty();
+        $('#pager').prop('hidden', true);
+        showMsg('Sorry, the search could not be completed. Please check your connection and try again.', true);
+      });
+  }
+
+  $('#searchForm').on('submit', function (e) {
+    e.preventDefault();
+    var term = $.trim($('#term').val());
+    if (!term) { showMsg('Please enter a search term.', true); return; }
+    currentTerm = term;   // a new search always starts at page 1
+    loadPage(1);
+  });
+
+  $('#pageSelect').on('change', function () { loadPage(parseInt($(this).val(), 10)); });
+});
+</script>
+</body>
+</html>
