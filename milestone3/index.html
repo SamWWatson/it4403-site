@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Library Book Finder (SPA)</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Open Library Book Finder</h1>
+  <p>Milestone 3: Single Page Application</p>
+</header>
+
+<main>
+  <div class="column">
+    <!-- Search input -->
+    <section aria-labelledby="searchHeading">
+      <h2 id="searchHeading">Search Books</h2>
+      <form id="searchForm">
+        <label for="term" class="hidden">Search term</label>
+        <input type="text" id="term" placeholder="Search by title or keyword">
+        <button type="submit" id="searchBtn">Search</button>
+      </form>
+      <div id="searchMsg" aria-live="polite"></div>
+    </section>
+
+    <!-- Search results and pagination -->
+    <section aria-labelledby="resultsHeading">
+      <h2 id="resultsHeading">Search Results</h2>
+      <ul id="results" class="book-list"></ul>
+      <div id="pager" class="pager" hidden>
+        <button type="button" id="prevBtn">Previous</button>
+        <span id="pageInfo"></span>
+        <button type="button" id="nextBtn">Next</button>
+      </div>
+    </section>
+
+    <!-- Predefined collection -->
+    <section aria-labelledby="collectionHeading">
+      <h2 id="collectionHeading">Collection: Science Fiction</h2>
+      <div id="collectionMsg" aria-live="polite"></div>
+      <ul id="collection" class="book-list"></ul>
+    </section>
+  </div>
+
+  <!-- Selected-book details -->
+  <aside class="column" aria-labelledby="detailsHeading">
+    <h2 id="detailsHeading">Book Details</h2>
+    <div id="detailsMsg" aria-live="polite"><p class="msg">Select a book to see its details here.</p></div>
+    <div id="details"></div>
+  </aside>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

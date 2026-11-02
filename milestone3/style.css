@@ -1,0 +1,27 @@
+body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f8; color: #222; margin: 0; }
+header { background: #1f3a5f; color: #fff; padding: 1rem 2rem; }
+header h1 { margin: 0; font-size: 1.4rem; }
+header p { margin: .2rem 0 0; color: #cfe3ff; }
+main { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+h2 { font-size: 1.2rem; border-bottom: 2px solid #1f3a5f; padding-bottom: .3rem; }
+.hidden { position: absolute; left: -9999px; }
+form { display: flex; gap: .5rem; }
+input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; }
+button { padding: .6rem 1rem; font-size: 1rem; background: #1f3a5f; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+button:disabled { background: #9aa7b8; cursor: not-allowed; }
+.msg { padding: .7rem 1rem; background: #fff; border-left: 4px solid #1f3a5f; margin: .7rem 0; }
+.msg.error { border-color: #b00020; }
+.book-list { list-style: none; padding: 0; margin: 0 0 1rem; }
+.book-list li { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); padding: .6rem; margin-bottom: .6rem; display: flex; gap: .8rem; align-items: center; }
+.book-list li.active { outline: 2px solid #0b5cad; }
+.book-list img, .nocover-s { width: 45px; height: 68px; object-fit: cover; flex-shrink: 0; }
+.nocover-s { background: #e3e8ee; color: #666; font-size: .65rem; display: flex; align-items: center; justify-content: center; text-align: center; }
+.book-btn { background: none; color: #0b5cad; padding: 0; text-align: left; font-weight: bold; text-decoration: underline; }
+.pager { display: flex; gap: 1rem; align-items: center; justify-content: center; margin-bottom: 1rem; }
+#details .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); padding: 1.2rem; }
+#details img { width: 180px; max-width: 100%; border: 1px solid #ccc; border-radius: 4px; }
+#details .nocover { width: 180px; height: 270px; background: #e3e8ee; color: #666; display: flex; align-items: center; justify-content: center; text-align: center; }
+#details h3 { margin: .2rem 0 .5rem; font-size: 1.3rem; }
+#details h4 { margin: 1rem 0 .3rem; }
+.na { color: #777; font-style: italic; }
