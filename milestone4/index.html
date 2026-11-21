@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Library Book Finder (Milestone 4)</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Open Library Book Finder</h1>
+  <p>Milestone 4: Improved SPA</p>
+</header>
+
+<div id="app" class="view-grid">
+  <section class="toolbar" aria-label="Search and view controls">
+    <form id="searchForm">
+      <label for="term" class="hidden">Search term</label>
+      <input type="text" id="term" placeholder="Search by title or keyword">
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
+    <div id="searchMsg" aria-live="polite"></div>
+    <div class="controls">
+      <div class="tabs" role="tablist" aria-label="Sections">
+        <button type="button" class="tab active" data-tab="results" role="tab" aria-selected="true">Search Results</button>
+        <button type="button" class="tab" data-tab="collection" role="tab" aria-selected="false">Science Fiction Books</button>
+      </div>
+      <div class="layout" role="group" aria-label="Layout">
+        <button type="button" class="layout-btn active" data-layout="grid" aria-pressed="true">Grid View</button>
+        <button type="button" class="layout-btn" data-layout="list" aria-pressed="false">List View</button>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="left">
+      <section id="resultsSection" aria-labelledby="resultsHeading">
+        <h2 id="resultsHeading">Search Results</h2>
+        <div id="resultsMsg" aria-live="polite"><p class="msg">Search for a book to see results here.</p></div>
+        <ul id="results" class="books"></ul>
+        <div id="pager" class="pager" hidden>
+          <button type="button" id="prevBtn">Previous</button>
+          <span id="pageInfo"></span>
+          <button type="button" id="nextBtn">Next</button>
+        </div>
+      </section>
+
+      <section id="collectionSection" aria-labelledby="collectionHeading" hidden>
+        <h2 id="collectionHeading">Science Fiction Books</h2>
+        <div id="collectionMsg" aria-live="polite"></div>
+        <ul id="collection" class="books"></ul>
+      </section>
+    </div>
+
+    <aside aria-labelledby="detailsHeading">
+      <h2 id="detailsHeading">Book Details</h2>
+      <div id="detailsMsg" aria-live="polite"><p class="msg">Select a book to see its details here.</p></div>
+      <div id="details"></div>
+    </aside>
+  </main>
+</div>
+
+<!-- Mustache templates: HTML lives here, data processing lives in app.js -->
+<script id="tpl-books" type="text/template">
+{{#books}}
+<li class="book{{#active}} active{{/active}}" data-id="{{workId}}">
+  {{#coverUrl}}<img src="{{coverUrl}}" alt="Cover of {{title}}" loading="lazy">{{/coverUrl}}
+  {{^coverUrl}}<div class="nocover">No cover available</div>{{/coverUrl}}
+  <div class="book-info">
+    <button type="button" class="book-btn" data-id="{{workId}}">{{title}}</button>
+    <p class="meta">{{authors}}</p>
+    {{#year}}<p class="meta">First published: {{year}}</p>{{/year}}
+  </div>
+</li>
+{{/books}}
+</script>
+
+<script id="tpl-details" type="text/template">
+<article class="card">
+  {{#coverUrl}}<img src="{{coverUrl}}" alt="Cover of {{title}}">{{/coverUrl}}
+  {{^coverUrl}}<div class="nocover big">No cover available</div>{{/coverUrl}}
+  <h3>{{title}}</h3>
+  <p><strong>Work ID:</strong> {{workId}}</p>
+  <p><strong>Author(s):</strong> {{authors}}</p>
+  {{#year}}<p><strong>First published:</strong> {{year}}</p>{{/year}}
+  {{#languages}}<p><strong>Language:</strong> {{languages}}</p>{{/languages}}
+  <h4>Description</h4>
+  {{#description}}<p class="desc">{{description}}</p>{{/description}}
+  {{^description}}<p class="na">No description available.</p>{{/description}}
+  <h4>Subjects</h4>
+  {{#subjects.length}}<ul>{{#subjects}}<li>{{.}}</li>{{/subjects}}</ul>{{/subjects.length}}
+  {{^subjects.length}}<p class="na">No subjects available.</p>{{/subjects.length}}
+  <p><a href="{{openLibraryUrl}}" target="_blank" rel="noopener">View "{{title}}" on Open Library</a></p>
+</article>
+</script>
+
+<script src="app.js"></script>
+</body>
+</html>
